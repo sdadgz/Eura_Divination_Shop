@@ -20,7 +20,7 @@ module.exports = configure(function (ctx) {
     // preFetch: true,
 
     // app boot file (/src/boot)
-    // --> boot files are part of "main.js"
+    // --> boot files are part of "home.js"
     // https://v2.quasar.dev/quasar-cli-webpack/boot-files
     boot: [
       'i18n',
@@ -206,13 +206,13 @@ module.exports = configure(function (ctx) {
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
       chainWebpackMain (/* chain */) {
-        // do something with the Electron main process Webpack cfg
+        // do something with the Electron home process Webpack cfg
         // extendWebpackMain also available besides this chainWebpackMain
       },
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
       chainWebpackPreload (/* chain */) {
-        // do something with the Electron main process Webpack cfg
+        // do something with the Electron home process Webpack cfg
         // extendWebpackPreload also available besides this chainWebpackPreload
       }
     }

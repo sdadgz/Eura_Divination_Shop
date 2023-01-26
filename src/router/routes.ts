@@ -5,8 +5,10 @@ const routes: RouteRecordRaw[] = [
         path: '/',
         component: () => import('layouts/MainLayout.vue'),
         children: [
+            {path: '', redirect: () => '/home'},
             {path: 'home', component: () => import('pages/main/Main.vue')},
-            {path: '', redirect: () => '/home'}
+            {path: 'upload', component: () => import('pages/main/Upload.vue')},
+            {path: 'about', component: () => import('pages/main/About.vue')},
         ],
     },
 
