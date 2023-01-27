@@ -1,4 +1,6 @@
 export class HolyRelic {
+    // 方便统计
+    index: number = -1;
     // 属性外的主要信息
     position: string = ''; // 定位
     jsonName: string = ''; // 脚本给他的名字
@@ -55,6 +57,11 @@ export class HolyRelic {
         this.omit = obj.level != 20;
     }
 
+    // 设置索引
+    setIndex(index: number) {
+        this.index = index;
+    }
+
     // 把键值对赋值进去
     add(kv: any): void {
         // @ts-ignore
@@ -73,6 +80,42 @@ export class HolyRelic {
         // }
         // return false;
     }
+
+    // 展示信息
+    toString(): string {
+        let res = '';
+        for (let entryName of holyRelicEntryNames) {
+            // @ts-ignore
+            const thisValue = this[`${entryName.jsonName}`];
+            if (thisValue && thisValue > 0) {
+                res += entryName.name + thisValue + ' ';
+            }
+        }
+        return res;
+    }
+}
+
+// 深度toString
+export function holyRelicsDeepToString(holyRelics: HolyRelic[]): string {
+    let res = '';
+    for (let holyRelic of holyRelics) {
+        res += holyRelicToString(holyRelic) + ' | ';
+    }
+    return res;
+}
+
+// 展示信息
+export function holyRelicToString(holyRelic: HolyRelic): string {
+    let res = '';
+    for (let entryName of holyRelicEntryNames) {
+        // @ts-ignore
+        const thisValue = holyRelic[`${entryName.jsonName}`];
+        if (thisValue && (thisValue > 0 || typeof thisValue == 'string')) {
+            const regExpExecArray = /^(-|\d)\d*(?:\.\d{0,2}[1-9]?)?/.exec(thisValue);
+            res += entryName.name + (regExpExecArray && regExpExecArray[0] || thisValue) + ' ';
+        }
+    }
+    return res;
 }
 
 // 词条转义
@@ -94,6 +137,32 @@ export const entryNames: JsonTransform[] = [
     {name: '充能', jsonName: 'recharge'},
     {name: '精通', jsonName: 'elementalMastery'},
     {name: '治疗加成', jsonName: 'cureEffect'},
+]
+
+// 圣遗物词条转义
+export const holyRelicEntryNames: JsonTransform[] = [
+    {name: '位置', jsonName: 'position'},
+    {name: '名字', jsonName: 'name'},
+    {name: '攻击', jsonName: 'attackPercentage'},
+    {name: '小攻击', jsonName: 'attackStatic'},
+    {name: '生命', jsonName: 'lifePercentage'},
+    {name: '小生命', jsonName: 'lifeStatic'},
+    {name: '防御', jsonName: 'defendPercentage'},
+    {name: '小防御', jsonName: 'defendStatic'},
+    {name: '暴击', jsonName: 'critical'},
+    {name: '暴伤', jsonName: 'criticalDamage'},
+    {name: '充能', jsonName: 'recharge'},
+    {name: '精通', jsonName: 'elementalMastery'},
+    {name: '治疗加成', jsonName: 'cureEffect'},
+    {name: '物伤', jsonName: 'physicalBonus'},
+    {name: '火伤', jsonName: 'fireBonus'},
+    {name: '水伤', jsonName: 'waterBonus'},
+    {name: '草伤', jsonName: 'dendroBonus'},
+    {name: '雷伤', jsonName: 'thunderBonus'},
+    {name: '风伤', jsonName: 'windBonus'},
+    {name: '冰伤', jsonName: 'iceBonus'},
+    {name: '岩伤', jsonName: 'rockBonus'},
+    {name: '装备', jsonName: 'equip'},
 ]
 
 // 圣遗物名字列表

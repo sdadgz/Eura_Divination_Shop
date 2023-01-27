@@ -9,7 +9,7 @@ import {
     witch,
     yeLan
 } from "components/home/Main";
-import {HolyRelic} from "components/home/HolyRelic";
+import {entryNames, HolyRelic} from "components/home/HolyRelic";
 
 export class People {
     // 人物专属的
@@ -131,6 +131,11 @@ export class People {
         this.responseCoefficient += responseCoefficient;
     }
 
+    // 设置哪个增伤
+    setBonus(bonus: string) {
+        this.whichBonus = bonus;
+    }
+
     // 穿个圣遗物
     add(holyRelic: HolyRelic): void {
         this.attackPercentage += holyRelic.attackPercentage;
@@ -152,7 +157,7 @@ export class People {
     }
 
     // 删除属性
-    del(holyRelic: HolyRelic): void {
+    del(holyRelic: HolyRelic) {
         this.attackPercentage -= holyRelic.attackPercentage;
         this.attackStatic -= holyRelic.attackStatic;
         this.lifePercentage -= holyRelic.lifePercentage;
@@ -169,5 +174,107 @@ export class People {
         // 增伤特殊
         // @ts-ignore
         this.increasedDamage -= holyRelic[`${this.whichBonus}`];
+    }
+
+    // 添加一个people
+    addPeople(people: People) {
+        this.baseAttack += people.baseAttack;
+        this.baseLife += people.baseLife;
+        this.allAttack += people.allAttack;
+        this.allLife += people.allLife;
+        this.responseCoefficient += people.responseCoefficient;
+        this.increasedDamage += people.increasedDamage;
+        this.protector += people.protector;
+        this.attackPercentage += people.attackPercentage;
+        this.attackStatic += people.attackStatic;
+        this.lifePercentage += people.lifePercentage;
+        this.lifeStatic += people.lifeStatic;
+        this.defendPercentage += people.defendPercentage;
+        this.defendStatic += people.defendStatic;
+        this.critical += people.critical;
+        this.criticalDamage += people.criticalDamage;
+        this.recharge += people.recharge;
+        this.elementalMastery += people.elementalMastery;
+        this.cureEffect += people.cureEffect;
+    }
+
+    // 减小一个people
+    delPeople(people: People) {
+        this.baseAttack -= people.baseAttack;
+        this.baseLife -= people.baseLife;
+        this.allAttack -= people.allAttack;
+        this.allLife -= people.allLife;
+        this.responseCoefficient -= people.responseCoefficient;
+        this.increasedDamage -= people.increasedDamage;
+        this.protector -= people.protector;
+        this.attackPercentage -= people.attackPercentage;
+        this.attackStatic -= people.attackStatic;
+        this.lifePercentage -= people.lifePercentage;
+        this.lifeStatic -= people.lifeStatic;
+        this.defendPercentage -= people.defendPercentage;
+        this.defendStatic -= people.defendStatic;
+        this.critical -= people.critical;
+        this.criticalDamage -= people.criticalDamage;
+        this.recharge -= people.recharge;
+        this.elementalMastery -= people.elementalMastery;
+        this.cureEffect -= people.cureEffect;
+    }
+
+    // 添加一个外部，用people当外部了
+    addOut(increasedDamageOut: number,
+           protectorOut: number,
+           attackPercentageOut: number,
+           attackStaticOut: number,
+           lifePercentageOut: number,
+           lifeStaticOut: number,
+           defendPercentageOut: number,
+           defendStaticOut: number,
+           criticalOut: number,
+           criticalDamageOut: number,
+           rechargeOut: number,
+           elementalMasteryOut: number) {
+
+        this.increasedDamage += increasedDamageOut;
+        this.protector += protectorOut;
+        this.attackPercentage += attackPercentageOut;
+        this.attackStatic += attackStaticOut;
+        this.lifePercentage += lifePercentageOut;
+        this.lifeStatic += lifeStaticOut;
+        this.defendPercentage += defendPercentageOut;
+        this.defendStatic += defendStaticOut;
+        this.critical += criticalOut;
+        this.criticalDamage += criticalDamageOut;
+        this.recharge += rechargeOut;
+        this.elementalMastery += elementalMasteryOut;
+    }
+
+    // 删除一个外部，用people当外部了
+    delOut(increasedDamageOut: number, protectorOut: number, attackPercentageOut: number, attackStaticOut: number, lifePercentageOut: number, lifeStaticOut: number, defendPercentageOut: number, defendStaticOut: number, criticalOut: number, criticalDamageOut: number, rechargeOut: number, elementalMasteryOut: number) {
+        this.increasedDamage -= increasedDamageOut;
+        this.protector -= protectorOut;
+        this.attackPercentage -= attackPercentageOut;
+        this.attackStatic -= attackStaticOut;
+        this.lifePercentage -= lifePercentageOut;
+        this.lifeStatic -= lifeStaticOut;
+        this.defendPercentage -= defendPercentageOut;
+        this.defendStatic -= defendStaticOut;
+        this.critical -= criticalOut;
+        this.criticalDamage -= criticalDamageOut;
+        this.recharge -= rechargeOut;
+        this.elementalMastery -= elementalMasteryOut;
+    }
+
+    // 展示信息
+    toString(): string {
+        let res = '';
+        for (let entryName of entryNames) {
+            // @ts-ignore
+            const thisValue = this[`${entryName.jsonName}`];
+            if (thisValue && thisValue > 0) {
+                const regExpExecArray = /^(-|\d)\d*(?:\.\d{0,2}[1-9]?)?/.exec(thisValue);
+                res += (!regExpExecArray ? '' : entryName.name + regExpExecArray[0] + ' ');
+            }
+        }
+        return res;
     }
 }
