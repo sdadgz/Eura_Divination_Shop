@@ -26,6 +26,7 @@
 
 import {ref} from "vue";
 import {Main} from "components/home/Main";
+import {CommSeccess} from "components/notifyTools";
 
 // json文件
 const jsonFile = ref(null);
@@ -38,6 +39,7 @@ function jsonFileHandler() {
     fileReader.addEventListener('load', res => {
       if (res.target && typeof res.target.result == 'string') {
         serialization(res.target.result);
+        CommSeccess("行了");
       }
     })
   }

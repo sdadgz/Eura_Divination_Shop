@@ -63,13 +63,15 @@ export class HolyRelic {
 
     // 是否是允许的名字
     allowJsonName(): boolean {
-        for (let name of holyRelicNames) {
-            if (name.jsonName == this.jsonName){
-                this.name = name.name;
-                return true;
-            }
-        }
-        return false;
+        return true;
+        // 只接受规定的圣遗物
+        // for (let name of holyRelicNames) {
+        //     if (name.jsonName == this.jsonName){
+        //         this.name = name.name;
+        //         return true;
+        //     }
+        // }
+        // return false;
     }
 }
 
