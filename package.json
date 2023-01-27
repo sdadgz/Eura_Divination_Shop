@@ -1,8 +1,8 @@
 {
   "name": "genshin",
   "version": "0.0.1",
-  "description": "genshin utils",
-  "productName": "genshin",
+:  "description": "浪花骑士优菈劳伦斯，以贵族的名义抢了莫娜的占卜铺",
+  "productName": "优菈占卜铺",
   "author": "sdadgz <pengchengma5@gmail.com>",
   "private": true,
   "scripts": {
