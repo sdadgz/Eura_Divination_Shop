@@ -128,7 +128,7 @@
       </q-item>
       <q-separator/>
 
-      <!--   选一个你心仪的圣遗物套装   -->
+      <!--   选套装老婆   -->
       <q-item>
         <q-item-section>
           <q-btn-dropdown :label="getNameFormJsonName(whichHolyRelic, holyRelicNames)" flat>
@@ -364,6 +364,7 @@
       <!--   一堆开关   -->
       <q-item>
         <q-item-section>
+          <q-toggle v-model="useEmptyHolyRelicRef" label="不穿别人穿着的圣遗物"/>
           <q-toggle v-model="thorPassive" label="雷神被动"/>
           <q-toggle v-model="insulation" label="绝缘"/>
           <q-toggle v-model="walnut" label="胡桃e"/>
@@ -395,7 +396,7 @@
       <q-separator/>
     </q-list>
 
-    <!--  第三坨，结果  -->
+    <!--  第四坨，结果  -->
     <q-list bordered style="width: 300px">
       <q-item>
         <q-item-section>
@@ -450,6 +451,53 @@
         </q-item>
       </template>
     </q-list>
+
+    <!--  第五坨，禁用角色圣遗物  -->
+    <q-list bordered style="width: 300px">
+      <!--   头   -->
+      <q-item>
+        <q-item-section>
+          <span style="font-size: 1.6em">锁定圣遗物</span>
+        </q-item-section>
+        <!--   预留     -->
+        <q-card-section>
+          <q-btn flat label="重置" @click="lockPeopleNames = []"/>
+        </q-card-section>
+      </q-item>
+      <q-separator/>
+
+      <!--   锁定的角色   -->
+      <q-item v-for="lockPeopleName in lockPeopleNames">
+        <q-item-section>
+          角色：{{ lockPeopleName }}的圣遗物被锁定
+        </q-item-section>
+      </q-item>
+      <q-separator/>
+
+      <!--   选择要锁定的角色   -->
+      <q-item>
+        <!--    给谁传啊    -->
+        <q-item-section>
+          <q-btn-dropdown :label="lockPeopleName" flat>
+            <q-list>
+              <q-item
+                  v-for="wife in Main.getPeopleList()"
+                  clickable
+                  v-close-popup
+                  @click="lockPeopleName = wife"
+              >
+                <q-item-section>
+                  {{ wife }}
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+        </q-item-section>
+        <!--    添加    -->
+        <q-btn label="添加" flat @click="lockPeopleNameHandler"/>
+      </q-item>
+      <q-separator/>
+    </q-list>
   </div>
 </template>
 
@@ -457,7 +505,14 @@
 
 import {ref} from "vue";
 import {People} from "components/home/People";
-import {Expectation, Main, OutList, setMainPanel, setRubbishToggle, setToggle} from "components/home/Main";
+import {
+  Expectation,
+  Main,
+  OutList,
+  setMainPanel,
+  setRubbishToggle,
+  setToggle,
+} from "components/home/Main";
 import {CommSeccess} from "components/notifyTools";
 import {MyArrays} from "components/MyArrays";
 import {
@@ -518,7 +573,7 @@ function startViolence() {
   // 设置which们 最先必须是他
   main.setWhich(whichPeople.value, whichHolyRelic.value, whichBonus.value);
   setMainPanel(baseAttack.value * 1, baseLife.value * 1, allAttack.value * 1, allLife.value * 1, responseCoefficient.value * 1);
-  setToggle(thorPassive.value, insulation.value, walnut.value, yeLan.value, protector.value, beakKnife.value, witch.value);
+  setToggle(useEmptyHolyRelicRef.value, thorPassive.value, insulation.value, walnut.value, yeLan.value, protector.value, beakKnife.value, witch.value);
   setRubbishToggle(showSuggest.value, useAttack.value, useCritical.value, useCriticalDamage.value, useRecharge.value, useLife.value, useElementalMastery.value);
   main.setBasePeople(increasedDamage.value / 100,
       protectorPanel.value * 1,
@@ -528,6 +583,7 @@ function startViolence() {
       elementalMastery.value * 1,
       cureEffect.value / 100);
   main.setTheOutList(theOutList.value);
+  main.setLockPeople(lockPeopleNames.value);
 
   results.value = main.start();
 }
@@ -618,6 +674,8 @@ function changeMutuallyExclusiveHandler(currentStatus: boolean, clickIndex: numb
 // 一堆switch =========================================================
 
 // 一堆开关的属性
+const useEmptyHolyRelicRef = ref(false); // 使用未使用的圣遗物
+
 const thorPassive = ref(false); // 雷神被动
 const insulation = ref(false); // 绝缘
 const walnut = ref(false); // 胡桃e
@@ -638,6 +696,21 @@ const useElementalMastery = ref(false); // 精通
 // 结果集 =================================================================
 
 const results = ref('欸嘿' as string | [[Expectation, Expectation, Expectation[]], [Expectation, Expectation, Expectation[]]]);
+
+// 锁定圣遗物 =================================================================
+
+// 被锁定的角色
+const lockPeopleName = ref('选老婆');
+
+// 储存锁定橘色列表
+const lockPeopleNames = ref([] as string[]);
+
+// 点击锁定角色
+function lockPeopleNameHandler() {
+  lockPeopleName.value != '选老婆' &&
+  lockPeopleNames.value.indexOf(lockPeopleName.value) < 0 &&
+  lockPeopleNames.value.push(lockPeopleName.value);
+}
 
 </script>
 

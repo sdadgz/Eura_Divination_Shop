@@ -8,6 +8,8 @@ export let allAttack = 1; // 总攻击力
 export let allLife = 1; // 总生命值
 export let responseCoefficient = 1; // 反应系数
 
+export let useEmptyHolyRelic = false; // 不穿别人的圣遗物
+
 export let thorPassive = false; // 雷神被动
 export let insulation = false; // 绝缘
 export let walnut = false; // 胡桃e
@@ -164,13 +166,33 @@ export class Main {
 
         // 最喜欢的暴力枚举，不是（因为只会这个）
         for (let i = 0; i < this.flower.length; i++) {
+            if (this.flower[i].omit) {
+                continue;
+            }
             for (let j = 0; j < this.feather.length; j++) {
+                if (this.feather[j].omit) {
+                    continue;
+                }
                 for (let k = 0; k < this.hourglass.length; k++) {
+                    if (this.hourglass[k].omit) {
+                        continue;
+                    }
                     for (let l = 0; l < this.cup.length; l++) {
+                        if (this.cup[l].omit) {
+                            continue;
+                        }
                         for (let m = 0; m < this.head.length; m++) {
+                            if (this.head[m].omit) {
+                                continue;
+                            }
                             // 圣遗物配套够不够四个
                             let count = 0;
+                            // 遍历当前选中的圣遗物
                             [this.flower[i], this.feather[j], this.hourglass[k], this.cup[l], this.head[m]].forEach(holyRelic => {
+                                if (useEmptyHolyRelic && !holyRelic.equip) {
+                                    // 用套装不够4个代替flag
+                                    count -= 5;
+                                }
                                 holyRelic.jsonName === this.whichHolyRelic && count++;
                             })
 
@@ -292,6 +314,17 @@ export class Main {
         this.theOutList = [...outList];
     }
 
+    // 设置锁定圣遗物
+    setLockPeople(lockPeopleList: string[]) {
+        [...this.flower, ...this.feather, ...this.hourglass, ...this.cup, ...this.head].forEach(holyRelic => {
+            for (let peopleName of lockPeopleList) {
+                if (holyRelic.equip == peopleName) {
+                    holyRelic.omit = true;
+                }
+            }
+        })
+    }
+
     // 获取人物列表
     static getPeopleList(): string[] {
         const main = new Main();
@@ -316,7 +349,8 @@ export function setMainPanel(baseAttack0: number, baseLife0: number, allAttack0:
 }
 
 // 设置开关
-export function setToggle(thorPassive0: boolean,
+export function setToggle(useEmptyHolyRelic0: boolean,
+                          thorPassive0: boolean,
                           insulation0: boolean,
                           walnut0: boolean,
                           yeLan0: boolean,
@@ -324,6 +358,7 @@ export function setToggle(thorPassive0: boolean,
                           beakKnife0: boolean,
                           witch0: boolean) {
 
+    useEmptyHolyRelic = useEmptyHolyRelic0;
     thorPassive = thorPassive0;
     insulation = insulation0;
     walnut = walnut0;
