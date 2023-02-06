@@ -1,3 +1,14 @@
+import {
+    Main,
+    useAttack,
+    useCritical,
+    useCriticalDamage,
+    useElementalMastery,
+    useLife,
+    useRecharge
+} from "components/home/Main";
+import {numberFormat} from "components/Utils";
+
 export class HolyRelic {
     // 方便统计
     index: number = -1;
@@ -81,6 +92,54 @@ export class HolyRelic {
         // return false;
     }
 
+    // 比较出更操蛋的，比this差返回参数，否则返回null
+    static getLoser(baseHR: HolyRelic, holyRelic: HolyRelic): HolyRelic | false {
+        return this.compare(baseHR, holyRelic) && holyRelic;
+    }
+
+    // 是不是比this差 参数等级低时返回true
+    private static compare(baseHR: HolyRelic, holyRelic: HolyRelic): boolean {
+        let all = 0;
+        let count = 0;
+        if (useAttack) {
+            all++;
+            holyRelic.attackPercentage <= baseHR.attackPercentage && count++;
+        }
+        if (useCritical) {
+            all++;
+            holyRelic.critical <= baseHR.critical && count++;
+        }
+        if (useCriticalDamage) {
+            all++;
+            holyRelic.criticalDamage <= baseHR.criticalDamage && count++;
+        }
+        if (useRecharge) {
+            all++;
+            holyRelic.recharge <= baseHR.recharge && count++;
+
+        }
+        if (useLife) {
+            all++;
+            holyRelic.lifePercentage <= baseHR.lifePercentage && count++;
+
+        }
+        if (useElementalMastery) {
+            all++;
+            holyRelic.elementalMastery <= baseHR.elementalMastery && count++;
+        }
+
+        all += 8;
+        holyRelic.physicalBonus <= baseHR.physicalBonus && count++;
+        holyRelic.fireBonus <= baseHR.fireBonus && count++;
+        holyRelic.waterBonus <= baseHR.waterBonus && count++;
+        holyRelic.dendroBonus <= baseHR.dendroBonus && count++;
+        holyRelic.thunderBonus <= baseHR.thunderBonus && count++;
+        holyRelic.windBonus <= baseHR.windBonus && count++;
+        holyRelic.iceBonus <= baseHR.iceBonus && count++;
+        holyRelic.rockBonus <= baseHR.rockBonus && count++;
+        return count == all;
+    }
+
     // 展示信息
     toString(): string {
         let res = '';
@@ -92,6 +151,24 @@ export class HolyRelic {
             }
         }
         return res;
+    }
+
+    // 展示信息
+    static toString(holyRelic: HolyRelic): string {
+        let res = '';
+        for (let entryName of holyRelicEntryNames) {
+            // @ts-ignore
+            const thisValue = holyRelic[`${entryName.jsonName}`];
+            if (thisValue && thisValue > 0) {
+                res += entryName.name + numberFormat(thisValue) + ' ';
+            }
+        }
+        return res;
+    }
+
+    // 是否相等
+    static equals(hr1: HolyRelic, hr2: HolyRelic): boolean {
+        return hr1.index == hr2.index;
     }
 }
 

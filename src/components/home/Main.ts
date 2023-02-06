@@ -1,6 +1,8 @@
 import {HolyRelic, holyRelicPositionNames} from "components/home/HolyRelic";
 import {ref} from "vue";
 import {People} from "components/home/People";
+import {Rubbish} from "components/home/Rubbish";
+import {Suggest, SuggestItem} from "components/home/Suggest";
 
 export let baseAttack = 1; // 白字攻击力
 export let baseLife = 1; // 白字生命值
@@ -26,6 +28,8 @@ export let useCriticalDamage = false; // 暴伤
 export let useRecharge = false; // 充能
 export let useLife = false; // 生命
 export let useElementalMastery = false; // 精通
+// 认定中多少条算垃圾圣遗物 todo 需要用户自主操控
+export let rubbishLength = 3;
 
 // 计算主体
 export class Main {
@@ -53,9 +57,44 @@ export class Main {
     worseResultList: Expectation[] = []; // 最差的结果集
 
     // 开始计算
-    start(): [[Expectation, Expectation, Expectation[]], [Expectation, Expectation, Expectation[]]] {
+    start(): [Expectation, Expectation, Expectation[]][] {
         this.addOut([], 0);
         return [this.result(this.bestResultList), this.result(this.worseResultList)];
+    }
+
+    // 找垃圾
+    absolutelyRubbish(): HolyRelic[][] {
+        // 修改为同jsonName一起判断，主词条也要考虑
+        const res: HolyRelic[][] = [];
+        res.push(Rubbish.absolutelyRubbish(this.flower.filter(holyRelic => holyRelic.position == this.whichHolyRelic)));
+        res.push(Rubbish.absolutelyRubbish(this.feather.filter(holyRelic => holyRelic.position == this.whichHolyRelic)));
+        res.push(Rubbish.absolutelyRubbish(this.hourglass.filter(holyRelic => holyRelic.position == this.whichHolyRelic)));
+        const cup: HolyRelic[] = [];
+        useAttack && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.attackPercentage > 40)));
+        useCritical && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.critical > 30)));
+        useCriticalDamage && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.criticalDamage > 50)));
+        useRecharge && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.recharge > 50)));
+        useLife && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.lifePercentage > 40)));
+        useElementalMastery && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.elementalMastery > 150)));
+        res.push(cup);
+        res.push(Rubbish.absolutelyRubbish(this.head.filter(holyRelic => holyRelic.position == this.whichHolyRelic)));
+        return res;
+    }
+
+    // 找可能的垃圾
+    maybeRubbish(): SuggestItem[] {
+        const res: SuggestItem[] = [];
+        res.push(Suggest.suggest(this.flower.filter(holyRelic => holyRelic.jsonName == this.whichHolyRelic)));
+        res.push(Suggest.suggest(this.feather.filter(holyRelic => holyRelic.jsonName == this.whichHolyRelic)));
+        res.push(Suggest.suggest(this.hourglass.filter(holyRelic => holyRelic.jsonName == this.whichHolyRelic)));
+        useAttack && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.attackPercentage > 40)));
+        useCritical && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.critical > 30)));
+        useCriticalDamage && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.criticalDamage > 50)));
+        useRecharge && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.recharge > 50)));
+        useLife && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.lifePercentage > 40)));
+        useElementalMastery && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.elementalMastery > 150)));
+        res.push(Suggest.suggest(this.head.filter(holyRelic => holyRelic.jsonName == this.whichHolyRelic)));
+        return res;
     }
 
     // 处理结果集

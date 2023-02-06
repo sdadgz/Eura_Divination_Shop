@@ -449,6 +449,7 @@
             </template>
           </q-item-section>
         </q-item>
+
       </template>
     </q-list>
 
@@ -498,6 +499,68 @@
       </q-item>
       <q-separator/>
     </q-list>
+
+    <!--   第六坨，最差圣遗物   -->
+    <q-list bordered style="width: 300px">
+      <!--   头   -->
+      <q-item>
+        <q-item-section>
+          <span style="font-size: 1.6em">垃圾圣遗物列表</span>
+        </q-item-section>
+        <!--   预留     -->
+        <q-card-section>
+          <q-btn flat label="" @click="lockPeopleNames = []"/>
+        </q-card-section>
+      </q-item>
+      <q-separator/>
+
+      <!--   绝对垃圾结果集   -->
+      <q-item>
+        <q-item-section class="text-primary">
+          绝对垃圾，放心删
+        </q-item-section>
+      </q-item>
+      <q-separator/>
+      <div v-for="(results, index) in absolutelyRubbishResults">
+        <!--    索引    -->
+        <q-item>
+          <q-item-section>
+            {{ getHolyRelicPositionName(index) }}，
+            {{ results.length || '没一' }}个垃圾
+          </q-item-section>
+        </q-item>
+
+        <!--    内容    -->
+        <q-item v-for="result in results">
+          <q-item-section>
+            {{ HolyRelic.toString(result) }}
+          </q-item-section>
+        </q-item>
+        <q-separator/>
+      </div>
+
+      <!--    可能垃圾    -->
+      <q-item>
+        <q-item-section class="text-primary">
+          可能垃圾
+        </q-item-section>
+      </q-item>
+      <template v-for="result in maybeRubbishResults">
+        <q-item v-if="result.count > -1">
+          <q-item-section>
+<!--            {{ result.label }}-->
+            中了 {{ result.count }} 条有用的
+          </q-item-section>
+        </q-item>
+        <q-item v-for="holyRelic in result.holyRelics">
+          <q-item-section>
+            {{ HolyRelic.toString(holyRelic) }}
+          </q-item-section>
+        </q-item>
+        <q-separator/>
+      </template>
+
+    </q-list>
   </div>
 </template>
 
@@ -516,6 +579,7 @@ import {
 import {CommSeccess} from "components/notifyTools";
 import {MyArrays} from "components/MyArrays";
 import {
+  HolyRelic,
   holyRelicNames,
   holyRelicsDeepToString,
   holyRelicToString,
@@ -523,8 +587,10 @@ import {
   JsonTransform
 } from "components/home/HolyRelic";
 import {numberFormat} from "components/Utils";
+import {log} from "util";
+import {Suggest, SuggestItem} from "components/home/Suggest";
 
-// 展示面板全部词条 =========================================================
+// region 展示面板全部词条 =========================================================
 const showAllEntry = ref(false);
 
 // 面板
@@ -568,6 +634,7 @@ function responseCoefficientHelp() {
 function startViolence() {
   CommSeccess("已经开始了，预计5-10分钟，去刷会抖音吧");
   const main = new Main();
+
   // 使用存储的信息
   main.useStoreCreate();
   // 设置which们 最先必须是他
@@ -585,10 +652,18 @@ function startViolence() {
   main.setTheOutList(theOutList.value);
   main.setLockPeople(lockPeopleNames.value);
 
-  results.value = main.start();
+  // 开始计算
+  if (showSuggest.value) {
+    absolutelyRubbishResults.value = main.absolutelyRubbish();
+    maybeRubbishResults.value = main.maybeRubbish();
+  } else {
+    results.value = main.start();
+  }
 }
 
-// 一堆外部 =========================================================
+// endregion
+
+// region 一堆外部 =========================================================
 
 // 展示外部添加面板
 const outShow = ref(false);
@@ -671,8 +746,9 @@ function changeMutuallyExclusiveHandler(currentStatus: boolean, clickIndex: numb
   }
 }
 
-// 一堆switch =========================================================
+// endregion
 
+// region 一堆switch =========================================================
 // 一堆开关的属性
 const useEmptyHolyRelicRef = ref(false); // 使用未使用的圣遗物
 
@@ -693,12 +769,14 @@ const useRecharge = ref(false); // 充能
 const useLife = ref(false); // 生命
 const useElementalMastery = ref(false); // 精通
 
-// 结果集 =================================================================
+// endregion
 
-const results = ref('欸嘿' as string | [[Expectation, Expectation, Expectation[]], [Expectation, Expectation, Expectation[]]]);
+// region 结果集 =================================================================
+const results = ref('欸嘿' as string | [Expectation, Expectation, Expectation[]][]);
 
-// 锁定圣遗物 =================================================================
+// endregion
 
+// region 锁定圣遗物 =================================================================
 // 被锁定的角色
 const lockPeopleName = ref('选老婆');
 
@@ -711,6 +789,19 @@ function lockPeopleNameHandler() {
   lockPeopleNames.value.indexOf(lockPeopleName.value) < 0 &&
   lockPeopleNames.value.push(lockPeopleName.value);
 }
+
+// endregion
+
+// region 垃圾圣遗物列表 ========================================================
+const absolutelyRubbishResults = ref([] as HolyRelic[][]); // 铁废物
+const maybeRubbishResults = ref([] as SuggestItem[]); // 废物
+
+// 获取名字 从0开始
+function getHolyRelicPositionName(index: number): string {
+  return ['花', '羽毛', '沙漏', '杯子', '头'][`${index}`];
+}
+
+// endregion
 
 </script>
 
