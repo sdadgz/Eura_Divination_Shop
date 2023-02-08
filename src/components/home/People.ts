@@ -66,7 +66,7 @@ export class People {
         if (yeLan) {
             this.allAttack = this.allLife;
         }
-        // 薙刀
+        // 雷神被动
         if (thorPassive) {
             let temp = this.recharge;
             temp -= 1;

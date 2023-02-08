@@ -548,7 +548,7 @@
       <template v-for="result in maybeRubbishResults">
         <q-item v-if="result.count > -1">
           <q-item-section>
-<!--            {{ result.label }}-->
+            <!--            {{ result.label }}-->
             中了 {{ result.count }} 条有用的
           </q-item-section>
         </q-item>
