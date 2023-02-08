@@ -248,6 +248,7 @@ export const holyRelicNames: JsonTransform[] = [
     {name: '追忆', jsonName: 'shimenawaReminiscence'},
     {name: '绝缘', jsonName: 'emblemOfSeveredFate'},
     {name: '魔女', jsonName: 'crimsonWitch'},
+    {name: '乐团', jsonName: 'wandererTroupe'},
 ]
 
 // 增伤名字列表
