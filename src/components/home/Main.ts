@@ -70,12 +70,14 @@ export class Main {
         res.push(Rubbish.absolutelyRubbish(this.feather.filter(holyRelic => holyRelic.position == this.whichHolyRelic)));
         res.push(Rubbish.absolutelyRubbish(this.hourglass.filter(holyRelic => holyRelic.position == this.whichHolyRelic)));
         const cup: HolyRelic[] = [];
-        useAttack && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.attackPercentage > 40)));
-        useCritical && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.critical > 30)));
-        useCriticalDamage && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.criticalDamage > 50)));
-        useRecharge && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.recharge > 50)));
-        useLife && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.lifePercentage > 40)));
+        useAttack && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.attackPercentage > .40)));
+        useCritical && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.critical > .30)));
+        useCriticalDamage && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.criticalDamage > .50)));
+        useRecharge && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.recharge > .50)));
+        useLife && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.lifePercentage > .40)));
         useElementalMastery && cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic.elementalMastery > 150)));
+        // @ts-ignore
+        cup.push(...Rubbish.absolutelyRubbish(this.cup.filter(holyRelic => holyRelic[`${this.whichBonus}`] > .40)));
         res.push(cup);
         res.push(Rubbish.absolutelyRubbish(this.head.filter(holyRelic => holyRelic.position == this.whichHolyRelic)));
         return res;
@@ -87,12 +89,14 @@ export class Main {
         res.push(Suggest.suggest(this.flower.filter(holyRelic => holyRelic.jsonName == this.whichHolyRelic)));
         res.push(Suggest.suggest(this.feather.filter(holyRelic => holyRelic.jsonName == this.whichHolyRelic)));
         res.push(Suggest.suggest(this.hourglass.filter(holyRelic => holyRelic.jsonName == this.whichHolyRelic)));
-        useAttack && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.attackPercentage > 40)));
-        useCritical && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.critical > 30)));
-        useCriticalDamage && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.criticalDamage > 50)));
-        useRecharge && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.recharge > 50)));
-        useLife && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.lifePercentage > 40)));
+        useAttack && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.attackPercentage > .40)));
+        useCritical && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.critical > .30)));
+        useCriticalDamage && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.criticalDamage > .50)));
+        useRecharge && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.recharge > .50)));
+        useLife && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.lifePercentage > .40)));
         useElementalMastery && res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic.elementalMastery > 150)));
+        // @ts-ignore
+        res.push(Suggest.suggest(this.cup.filter(holyRelic => holyRelic[`${this.whichBonus}`] > .40)));
         res.push(Suggest.suggest(this.head.filter(holyRelic => holyRelic.jsonName == this.whichHolyRelic)));
         return res;
     }
